@@ -3,9 +3,11 @@
     <envs>
       <env name="DEBUG" value="mathbox-test" />
     </envs>
-    <browser url="http://localhost:3000/" />
+    <browser start="true" url="http://localhost:3000/" />
     <RunnerSettings RunnerId="Basic" />
+    <RunnerSettings RunnerId="debuggableProgram" />
     <ConfigurationWrapper RunnerId="Basic" />
+    <ConfigurationWrapper RunnerId="debuggableProgram" />
     <method />
   </configuration>
 </component>
