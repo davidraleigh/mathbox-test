@@ -28,6 +28,7 @@ colors = {
 
 // Place camera
 var camera = mathbox.camera({
+    // allows interactive camera controls
     proxy: true,
     position: [2, 5, 5]
 });
@@ -59,7 +60,7 @@ view
     })
     .grid({
         width: 2,
-        axes: [1, 3]
+        axes: [1, 2]
         // divideX: 20
     });
 
@@ -146,18 +147,18 @@ view.array({
     live: false,
     data: [colors.x, colors.y, colors.z].map(function (color){
         return [color.r, color.g, color.b, 1];
-    }),
+    })
 });
 
 view.array({
-    data: [[2,0,0], [0,1.11,0], [0,0,1]],
+    data: [[1.1,0.1,-.11], [0,1.21,0], [0,0,1]],
     channels: 3, // necessary
-    live: false,
+    live: false
 }).text({
-    data: ["x", "y", "z"],
+    data: ["x", "y", "z"]
 }).label({
     color: 0xFFFFFF,
-    colors: "#colors",
+    colors: "#colors"
 });
 
 //*/
