@@ -35,8 +35,11 @@ var camera = mathbox.camera({
 
 
 // 2D cartesian
+var xRange = 10;
+var yRange = 10;
+var zRange = 10;
 var view =mathbox.cartesian({
-    range: [[-1,1], [-1, 1], [-1, 1]],
+    range: [[-xRange,xRange], [-yRange, yRange], [-zRange, zRange]],
     scale: [2, 2, 2]
 });
 
@@ -73,49 +76,49 @@ view
 // Calibrate focus distance for units
 mathbox.set('focus', 3);
 
-// Add some data
-// var data =
-//   view
-//   .interval({
-//     expr: function (emit, x, i, t) {
-//       emit(x, Math.sin(x + t));
-//     },
-//     length: 64,
-//     channels: 2,
-//   });
+//Add some data
+var data =
+   view
+   .interval({
+     expr: function (emit, x, i, t) {
+       emit(x, xRange * Math.sin(x + t));
+     },
+     length: 256,
+     channels: 2
+   });
 
-// Draw a curve
-// var curve =
-//   view
-//   .line({
-//     width: 5,
-//     color: '#3090FF',
-//   });
+//Draw a curve
+var curve =
+   view
+   .line({
+     width: 5,
+     color: '#3090FF'
+   });
 
 // Draw some points
-// var points =
-//   view
-//   .point({
-//     size: 8,
-//     color: '#3090FF',
-//   });
+var points =
+   view
+   .point({
+     size: 8,
+     color: '#3090FF'
+   });
 
 // Draw vectors
-// var vector =
-//   view.interval({
-//     expr: function (emit, x, i, t) {
-//       emit(x, 0);
-//       emit(x, -Math.sin(x + t));
-//     },
-//     length: 64,
-//     channels: 2,
-//     items: 2,
-//   })
-//   .vector({
-//     end: true,
-//     width: 5,
-//     color: '#50A000',
-//   });
+var vector =
+   view.interval({
+     expr: function (emit, x, i, t) {
+       emit(x, 0);
+       emit(x, -Math.sin(x + t));
+     },
+     length: 64,
+     channels: 2,
+     items: 2
+   })
+   .vector({
+     end: true,
+     width: 5,
+     color: '#50A000'
+   });
 
 // Draw ticks and labels
 // var scale =
@@ -151,7 +154,7 @@ view.array({
 });
 
 view.array({
-    data: [[1.1,0.1,-.11], [0,1.21,0], [0,0,1]],
+    data: [[1.1 * xRange,0.1 * xRange,-.11 * xRange], [0,1.21 * yRange,0], [0,0,1 * zRange]],
     channels: 3, // necessary
     live: false
 }).text({
