@@ -35,14 +35,33 @@ var camera = mathbox.camera({
 
 
 // 2D cartesian
-var xRange = 10;
-var yRange = 10;
-var zRange = 10;
+var xRange = 1;
+var yRange = 1;
+var zRange = 1;
 var view =mathbox.cartesian({
     range: [[-xRange,xRange], [-yRange, yRange], [-zRange, zRange]],
     scale: [2, 2, 2]
 });
 
+
+var time = 0;
+var fade = 0;
+
+three.on('update', function () {
+    var clock = three.Time.clock;
+    time = clock;
+//
+    var t = Math.max(clock, 0) / 2;
+    t = t < 0.5 ? t * t : t - 0.25;
+//
+    var o = 0.5 - 0.5 * Math.cos(Math.min(1, t) * π);
+    fade = o;
+//
+//    f = t / 8;
+//    c = Math.cos(f);
+//    s = Math.sin(f);
+//    view.set('quaternion', [0, -s, 0, c]);
+});
 
 // Axes + grid
 view
@@ -67,12 +86,6 @@ view
         // divideX: 20
     });
 
-
-
-// Make axes black
-//mathbox.select('axis').set('color', 'black');
-
-
 // Calibrate focus distance for units
 mathbox.set('focus', 3);
 
@@ -80,15 +93,14 @@ mathbox.set('focus', 3);
 var data =
    view
    .interval({
-     expr: function (emit, x, i, t) {
-       emit(x, xRange * Math.sin(x + t));
+     expr: function (emit, x) {
+       emit(x, xRange * Math.sin(x));
      },
-     length: 256,
+     length: 64,
      channels: 2
    });
 
 //Draw a curve
-var curve =
    view
    .line({
      width: 5,
@@ -96,7 +108,6 @@ var curve =
    });
 
 // Draw some points
-var points =
    view
    .point({
      size: 8,
@@ -108,7 +119,7 @@ var vector =
    view.interval({
      expr: function (emit, x, i, t) {
        emit(x, 0);
-       emit(x, -Math.sin(x + t));
+       emit(x, xRange * -Math.sin(x + t));
      },
      length: 64,
      channels: 2,
@@ -120,30 +131,34 @@ var vector =
      color: '#50A000'
    });
 
-// Draw ticks and labels
-// var scale =
-//   view.scale({
-//     divide: 10,
-//   });
+view.voxel({
+    data: [
+        -1, -1, -.5, -.75, -.75, -1.2, -.4, -.6, -1.5, 0, 0, 0,
+        // -1,  1, -.5, -.75,  .75, -1.2, -.4,  .6, -1.5, 0, 0, 0,
+        //  1,  1, -.5,  .75,  .75, -1.2,  .4,  .6, -1.5, 0, 0, 0,
+        //  1, -1, -.5,  .75, -.75, -1.2,  .4, -.6, -1.5, 0, 0, 0,
 
-// var ticks =
-//   view.ticks({
-//     width: 5,
-//     size: 15,
-//     color: 'black',
-//   });
+        -1, -1,  .5, -.75, -.75,  1.2, -.4, -.6,  1.5, 0, 0, 0,
+        -1,  1,  .5, -.75,  .75,  1.2, -.4,  .6,  1.5, 0, 0, 0,
+          1,  1,  .5,  .75,  .75,  1.2,  .4,  .6,  1.5, 0, 0, 0,
+          1, -1,  .5,  .75, -.75,  1.2,  .4, -.6,  1.5, 0, 0, 0,
+    ],
+    width: 4,
+    height: 2,
+    depth: 1,
+    items: 4,
+    channels: 3
+});
 
-// var format =
-//   view.format({
-//     digits: 2,
-//     weight: 'bold',
-//   });
+view.face({
+    color: 0x3090FF,
+    color: 0xA0B7FF,
+    shaded: true
+});
+//-130, 10));
+//pg.lineTo(-131, 15);
+//pg.lineTo(-140, 20);
 
-var labels =
-    view.label({
-        color: 'red',
-        zIndex: 1
-    });
 
 view.array({
     id: "colors",
@@ -164,19 +179,6 @@ view.array({
     colors: "#colors"
 });
 
-//*/
-// Animate
-// var play = mathbox.play({
-//   target: 'cartesian',
-//   pace: 5,
-//   to: 2,
-//   loop: true,
-//   script: [
-//     {props: {range: [[-2, 2], [-1, 1]]}},
-//     {props: {range: [[-4, 4], [-2, 2]]}},
-//     {props: {range: [[-2, 2], [-1, 1]]}},
-//   ]
-// });
 
 
 
