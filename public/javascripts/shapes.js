@@ -6,12 +6,11 @@ var mathbox = mathBox({
     controls: {
         // Orbit controls, i.e. Euler angles, with gimbal lock
         klass: THREE.OrbitControls
-
-        // Trackball controls, i.e. Free quaternion rotation
-        //klass: THREE.TrackballControls,
     }
 });
-if (mathbox.fallback) throw "WebGL not supported";
+
+if (mathbox.fallback)
+    throw "WebGL not supported";
 
 var three = mathbox.three;
 three.renderer.setClearColor(new THREE.Color(0xFFFFFF), 1.0);
@@ -22,10 +21,6 @@ colors = {
     z: new THREE.Color(0x0074D9)
 };
 
-
-// Do stuff with mathbox,
-// for example: (see docs/intro.md)
-
 // Place camera
 var camera = mathbox.camera({
     // allows interactive camera controls
@@ -34,33 +29,13 @@ var camera = mathbox.camera({
 });
 
 
-// 2D cartesian
+// 3D cartesian
 var xRange = 10000000;
-var yRange = 10000000;
-var zRange = 10000000;
+var yRange = xRange;
+var zRange = xRange;
 var view =mathbox.cartesian({
     range: [[-xRange,xRange], [-yRange, yRange], [-zRange, zRange]],
     scale: [2, 2, 2]
-});
-
-
-var time = 0;
-var fade = 0;
-
-three.on('update', function () {
-    var clock = three.Time.clock;
-    time = clock;
-//
-    var t = Math.max(clock, 0) / 2;
-    t = t < 0.5 ? t * t : t - 0.25;
-//
-    var o = 0.5 - 0.5 * Math.cos(Math.min(1, t) * π);
-    fade = o;
-//
-//    f = t / 8;
-//    c = Math.cos(f);
-//    s = Math.sin(f);
-//    view.set('quaternion', [0, -s, 0, c]);
 });
 
 // Axes + grid
@@ -89,54 +64,12 @@ view
 // Calibrate focus distance for units
 mathbox.set('focus', 3);
 
-//Add some data
-var data =
-   view
-   .interval({
-     expr: function (emit, x) {
-       emit(x, xRange * Math.sin(x));
-     },
-     length: 64,
-     channels: 2
-   });
-
-//Draw a curve
-   view
-   .line({
-     width: 5,
-     color: '#3090FF'
-   });
-
-// Draw some points
-   view
-   .point({
-     size: 8,
-     color: '#3090FF'
-   });
-
-// Draw vectors
-var vector =
-   view.interval({
-     expr: function (emit, x, i, t) {
-       emit(x, 0);
-       emit(x, xRange * -Math.sin(x + t));
-     },
-     length: 64,
-     channels: 2,
-     items: 2
-   })
-   .vector({
-     end: true,
-     width: 5,
-     color: '#50A000'
-   });
-
 view.voxel({
     data: [
         -1 * xRange, -1 * xRange, -.5 * xRange, -.75 * xRange, -.75 * xRange, -1.2 * xRange, -.4 * xRange, -.6 * xRange, -1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
-        // -1 * xRange,  1 * xRange, -.5 * xRange, -.75 * xRange,  .75 * xRange, -1.2 * xRange, -.4 * xRange,  .6 * xRange, -1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
-        //  1 * xRange,  1 * xRange, -.5 * xRange,  .75 * xRange,  .75 * xRange, -1.2 * xRange,  .4 * xRange,  .6 * xRange, -1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
-        //  1 * xRange, -1 * xRange, -.5 * xRange,  .75 * xRange, -.75 * xRange, -1.2 * xRange,  .4 * xRange, -.6 * xRange, -1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
+        -1 * xRange,  1 * xRange, -.5 * xRange, -.75 * xRange,  .75 * xRange, -1.2 * xRange, -.4 * xRange,  .6 * xRange, -1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
+          1 * xRange,  1 * xRange, -.5 * xRange,  .75 * xRange,  .75 * xRange, -1.2 * xRange,  .4 * xRange,  .6 * xRange, -1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
+          1 * xRange, -1 * xRange, -.5 * xRange,  .75 * xRange, -.75 * xRange, -1.2 * xRange,  .4 * xRange, -.6 * xRange, -1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
 
         -1 * xRange, -1 * xRange,  .5 * xRange, -.75 * xRange, -.75 * xRange,  1.2 * xRange, -.4 * xRange, -.6 * xRange,  1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
         -1 * xRange,  1 * xRange,  .5 * xRange, -.75 * xRange,  .75 * xRange,  1.2 * xRange, -.4 * xRange,  .6 * xRange,  1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
@@ -154,9 +87,6 @@ view.face({
     color: 0xA0B7FF,
     shaded: true
 });
-//-130, 10));
-//pg.lineTo(-131, 15);
-//pg.lineTo(-140, 20);
 
 
 view.array({
