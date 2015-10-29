@@ -35,9 +35,9 @@ var camera = mathbox.camera({
 
 
 // 2D cartesian
-var xRange = 1;
-var yRange = 1;
-var zRange = 1;
+var xRange = 10000000;
+var yRange = 10000000;
+var zRange = 10000000;
 var view =mathbox.cartesian({
     range: [[-xRange,xRange], [-yRange, yRange], [-zRange, zRange]],
     scale: [2, 2, 2]
@@ -133,15 +133,15 @@ var vector =
 
 view.voxel({
     data: [
-        -1, -1, -.5, -.75, -.75, -1.2, -.4, -.6, -1.5, 0, 0, 0,
-        // -1,  1, -.5, -.75,  .75, -1.2, -.4,  .6, -1.5, 0, 0, 0,
-        //  1,  1, -.5,  .75,  .75, -1.2,  .4,  .6, -1.5, 0, 0, 0,
-        //  1, -1, -.5,  .75, -.75, -1.2,  .4, -.6, -1.5, 0, 0, 0,
+        -1 * xRange, -1 * xRange, -.5 * xRange, -.75 * xRange, -.75 * xRange, -1.2 * xRange, -.4 * xRange, -.6 * xRange, -1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
+        // -1 * xRange,  1 * xRange, -.5 * xRange, -.75 * xRange,  .75 * xRange, -1.2 * xRange, -.4 * xRange,  .6 * xRange, -1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
+        //  1 * xRange,  1 * xRange, -.5 * xRange,  .75 * xRange,  .75 * xRange, -1.2 * xRange,  .4 * xRange,  .6 * xRange, -1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
+        //  1 * xRange, -1 * xRange, -.5 * xRange,  .75 * xRange, -.75 * xRange, -1.2 * xRange,  .4 * xRange, -.6 * xRange, -1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
 
-        -1, -1,  .5, -.75, -.75,  1.2, -.4, -.6,  1.5, 0, 0, 0,
-        -1,  1,  .5, -.75,  .75,  1.2, -.4,  .6,  1.5, 0, 0, 0,
-          1,  1,  .5,  .75,  .75,  1.2,  .4,  .6,  1.5, 0, 0, 0,
-          1, -1,  .5,  .75, -.75,  1.2,  .4, -.6,  1.5, 0, 0, 0,
+        -1 * xRange, -1 * xRange,  .5 * xRange, -.75 * xRange, -.75 * xRange,  1.2 * xRange, -.4 * xRange, -.6 * xRange,  1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
+        -1 * xRange,  1 * xRange,  .5 * xRange, -.75 * xRange,  .75 * xRange,  1.2 * xRange, -.4 * xRange,  .6 * xRange,  1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
+          1 * xRange,  1 * xRange,  .5 * xRange,  .75 * xRange,  .75 * xRange,  1.2 * xRange,  .4 * xRange,  .6 * xRange,  1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
+          1 * xRange, -1 * xRange,  .5 * xRange,  .75 * xRange, -.75 * xRange,  1.2 * xRange,  .4 * xRange, -.6 * xRange,  1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
     ],
     width: 4,
     height: 2,
@@ -151,7 +151,6 @@ view.voxel({
 });
 
 view.face({
-    color: 0x3090FF,
     color: 0xA0B7FF,
     shaded: true
 });
