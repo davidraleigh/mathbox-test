@@ -1,6 +1,9 @@
 /**
  * Created by davidraleigh on 10/24/15.
  */
+
+//var mathJS = require('mathjs');
+//var mathBox = require('mathbox-0.0.4/build/mathbox-bundle.js');
 var mathbox = mathBox({
     plugins: ['core', 'controls', 'cursor', 'mathbox'],
     controls: {
@@ -30,7 +33,8 @@ var camera = mathbox.camera({
 
 
 // 3D cartesian
-var xRange = 10000000;
+var radius = 1;
+var xRange = radius;
 var yRange = xRange;
 var zRange = xRange;
 var view =mathbox.cartesian({
@@ -64,29 +68,75 @@ view
 // Calibrate focus distance for units
 mathbox.set('focus', 3);
 
-view.voxel({
-    data: [
-        -1 * xRange, -1 * xRange, -.5 * xRange, -.75 * xRange, -.75 * xRange, -1.2 * xRange, -.4 * xRange, -.6 * xRange, -1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
-        -1 * xRange,  1 * xRange, -.5 * xRange, -.75 * xRange,  .75 * xRange, -1.2 * xRange, -.4 * xRange,  .6 * xRange, -1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
-          1 * xRange,  1 * xRange, -.5 * xRange,  .75 * xRange,  .75 * xRange, -1.2 * xRange,  .4 * xRange,  .6 * xRange, -1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
-          1 * xRange, -1 * xRange, -.5 * xRange,  .75 * xRange, -.75 * xRange, -1.2 * xRange,  .4 * xRange, -.6 * xRange, -1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
+// tau is the golden rectangle length
+var tau= (1.0 + Math.sqrt(5)) / 2.0;
+// determine golden latitude of rings for icosahedron
+var goldenLat = (Math.PI/2) - Math.atan2(1, tau) * 2;
 
-        -1 * xRange, -1 * xRange,  .5 * xRange, -.75 * xRange, -.75 * xRange,  1.2 * xRange, -.4 * xRange, -.6 * xRange,  1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
-        -1 * xRange,  1 * xRange,  .5 * xRange, -.75 * xRange,  .75 * xRange,  1.2 * xRange, -.4 * xRange,  .6 * xRange,  1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
-          1 * xRange,  1 * xRange,  .5 * xRange,  .75 * xRange,  .75 * xRange,  1.2 * xRange,  .4 * xRange,  .6 * xRange,  1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
-          1 * xRange, -1 * xRange,  .5 * xRange,  .75 * xRange, -.75 * xRange,  1.2 * xRange,  .4 * xRange, -.6 * xRange,  1.5 * xRange, 0 * xRange, 0 * xRange, 0 * xRange,
-    ],
-    width: 4,
-    height: 2,
-    depth: 1,
-    items: 4,
+var lonInterval = Math.PI * 2 / 5;
+
+var upperRingLon = [0, lonInterval, lonInterval * 2, lonInterval * 3, lonInterval * 4];
+var lowerRingLon = [];
+upperRingLon.forEach(function(element) { lowerRingLon.push(element + lonInterval / 2);})
+upperRingLon.push(upperRingLon[0]);
+lowerRingLon.push(lowerRingLon[0]);
+
+var xyzFromSpherical = function(lat, lon, r) {
+    var x = Math.cos(lat) * Math.cos(lon) * r;
+    var y = Math.cos(lat) * Math.sin(lon) * r;
+    var z = Math.sin(lat) * r;
+    // sway y and z for graphics y-up property
+    return [x, z, y];
+};
+
+var vertices = [];
+
+// y-up position of top point in z-up reference frame
+var topPoint = [0, radius, 0]; //var topPoint = [0, 0, radius];
+var bottomPoint = [0, -radius, 0]; //var topPoint = [0, 0, radius];
+
+for (var i = 0; i < upperRingLon.length - 1; i++) {
+    Array.prototype.push.apply(vertices, topPoint);
+    Array.prototype.push.apply(vertices, xyzFromSpherical(goldenLat, upperRingLon[i + 1], radius));
+    Array.prototype.push.apply(vertices, xyzFromSpherical(goldenLat, upperRingLon[i], radius));
+}
+
+for (var i = 0; i < upperRingLon.length - 1; i++) {
+    Array.prototype.push.apply(vertices, xyzFromSpherical(goldenLat, upperRingLon[i], radius));
+    Array.prototype.push.apply(vertices, xyzFromSpherical(goldenLat, upperRingLon[i + 1], radius));
+    Array.prototype.push.apply(vertices, xyzFromSpherical(-goldenLat, lowerRingLon[i], radius));
+
+    Array.prototype.push.apply(vertices, xyzFromSpherical(-goldenLat, lowerRingLon[i], radius));
+    Array.prototype.push.apply(vertices, xyzFromSpherical(goldenLat, upperRingLon[i + 1], radius));
+    Array.prototype.push.apply(vertices, xyzFromSpherical(-goldenLat, lowerRingLon[i + 1], radius));
+}
+
+for (var i = 0; i < upperRingLon.length - 1; i++) {
+    Array.prototype.push.apply(vertices, bottomPoint);
+    Array.prototype.push.apply(vertices, xyzFromSpherical(-goldenLat, lowerRingLon[i], radius));
+    Array.prototype.push.apply(vertices, xyzFromSpherical(-goldenLat, lowerRingLon[i + 1], radius));
+}
+
+view.voxel({
+    data: vertices,
+    width: 60,
+    height: 60,
+    depth: 60,
+    items: 3,
     channels: 3
 });
 
 view.face({
     color: 0xA0B7FF,
     shaded: true
-});
+})
+    .face({
+        color: 0x3090FF,
+        width: 3,
+        fill: false,
+        line: false
+    })
+;
 
 
 view.array({
@@ -102,7 +152,7 @@ view.array({
     channels: 3, // necessary
     live: false
 }).text({
-    data: ["x", "y", "z"]
+    data: ["y", "z", "x"]
 }).label({
     color: 0xFFFFFF,
     colors: "#colors"
